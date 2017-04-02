@@ -11,6 +11,7 @@ import javax.xml.transform.stream.*;
 import javax.xml.transform.dom.*;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 
@@ -38,16 +39,18 @@ public class GetWeatherNow {
 	
 	private static CwbData data = new CwbData();
 	
-	private static String dataid = data.getAutoNow(); //自動氣象站-氣象觀測資料
+	private static String dataAuto = data.getAutoNow(); //自動氣象站-氣象觀測資料
+	
+	private static String dataBureau = data.getBureauNow(); //局屬
 	
 	private static String authorizationkey = data.getTokenKey();
 	
-	public JSONObject getJson() {
+	public JSONObject getJson(String dataId) {
 		
 		JSONObject soapDatainJsonObject = new JSONObject();
 
 		try {
-			String pre_apiURL = "http://opendata.cwb.gov.tw/opendataapi?dataid=" + dataid + "&authorizationkey=" + authorizationkey;
+			String pre_apiURL = "http://opendata.cwb.gov.tw/opendataapi?dataid=" + dataId + "&authorizationkey=" + authorizationkey;
 			System.out.println("url " + pre_apiURL);
 			System.out.println("----------------------------");
 			URL url = new URL(pre_apiURL);
@@ -74,22 +77,24 @@ public class GetWeatherNow {
 	}
 	
 	public List<WeatherNow> getNowWeather(){
-		JSONObject obj = getJson();
+		JSONObject autoObj = getJson(dataAuto);
+		JSONObject bureauObj = getJson(dataBureau);
 		
 		List<WeatherNow> nows = new ArrayList<WeatherNow>();
 		
-		JSONArray arr = obj.getJSONObject("cwbopendata").getJSONArray("location");
-		for(int i=0; i<arr.length(); i++){
+		//getAutoWeatherData
+		JSONArray autoArr = autoObj.getJSONObject("cwbopendata").getJSONArray("location");
+		for(int i=0; i<autoArr.length(); i++){
 			WeatherNow now = new WeatherNow();
-			String locationName = arr.getJSONObject(i).getString("locationName");
+			String locationName = autoArr.getJSONObject(i).getString("locationName");
 			System.out.println(locationName);
 			now.setLocationName(locationName);
 			
-			String time = arr.getJSONObject(i).getJSONObject("time").getString("obsTime");
+			String time = autoArr.getJSONObject(i).getJSONObject("time").getString("obsTime");
 			System.out.println("發布時間: " + time);
 			now.setTime(time);
 			
-			JSONArray weatherElement = arr.getJSONObject(i).getJSONArray("weatherElement");
+			JSONArray weatherElement = autoArr.getJSONObject(i).getJSONArray("weatherElement");
 			for (int j=0; j<weatherElement.length(); j++){
 				String elementName = weatherElement.getJSONObject(j).getString("elementName");
 				Double elementValue = weatherElement.getJSONObject(j).getJSONObject("elementValue").getDouble("value");
@@ -109,6 +114,54 @@ public class GetWeatherNow {
 					now.setHumd(elementValue);
 					break;
 				case"H_24R":
+					now.setH_24r(elementValue);
+					break;
+				default:
+					break;
+				}
+			}
+			nows.add(now);
+			System.out.println("--------------------------------------------------------");
+		}
+		
+		//getBureauWeatherData
+		JSONArray bureauArr = bureauObj.getJSONObject("cwbopendata").getJSONArray("location");
+		for(int i=0; i<bureauArr.length(); i++){
+			WeatherNow now = new WeatherNow();
+			String locationName = bureauArr.getJSONObject(i).getString("locationName");
+			System.out.println(locationName);
+			now.setLocationName(locationName);
+			
+			String time = bureauArr.getJSONObject(i).getJSONObject("time").getString("obsTime");
+			System.out.println("發布時間: " + time);
+			now.setTime(time);
+			
+			JSONArray weatherElement = bureauArr.getJSONObject(i).getJSONArray("weatherElement");
+			for (int j=0; j<weatherElement.length(); j++){
+				String elementName = weatherElement.getJSONObject(j).getString("elementName");
+				Double elementValue = 0.0;
+				try{
+					elementValue = weatherElement.getJSONObject(j).getJSONObject("elementValue").getDouble("value");
+				}catch(JSONException e){
+					e.getStackTrace();
+					System.out.println(elementName + " :------error------");
+				}
+				System.out.println(elementName + " : " + elementValue);
+				
+				switch(elementName){
+				case"WDIR":
+					now.setWdir(elementValue);
+					break;
+				case"WDSD":
+					now.setWdsd(elementValue);
+					break;
+				case"TEMP":
+					now.setTemp(elementValue);
+					break;
+				case"HUMD":
+					now.setHumd(elementValue);
+					break;
+				case"24R":
 					now.setH_24r(elementValue);
 					break;
 				default:
