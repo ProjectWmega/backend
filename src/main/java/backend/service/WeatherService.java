@@ -3,28 +3,46 @@ package backend.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import backend.connect.GetTwoDaysWeather;
 import backend.connect.GetWeatherNow;
+import backend.connect.GetWeekWeather;
+import backend.data.Day;
+import backend.data.Night;
 import backend.data.TwoDays;
 import backend.data.TwoDaysItem;
 import backend.data.WeatherNow;
 import backend.data.Week;
-import backend.data.WeekItem;;
+import backend.data.WeekItem;
 
 @Path("weather/")
 public class WeatherService {
 	
 	private GetWeatherNow weatherNow = GetWeatherNow.getInstance();
+	private GetTwoDaysWeather twoDaysWeather = GetTwoDaysWeather.getInstance();
+	private GetWeekWeather weeksWeather = GetWeekWeather.getInstance();
 	
 	@GET
 	@Path("hello")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String hello() {
 		return "hello";
+	}
+	
+	@POST
+	@Path("testPost")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String test(@FormParam("lat") Double lat, @FormParam("lng") Double lng) {
+		String result = "your site: " + lat + ", " + lng;
+		return result;
 	}
 	
 	@GET
@@ -43,11 +61,11 @@ public class WeatherService {
 		WeatherNow weather = new WeatherNow();
 		
 		weather.setH_24r(0.0);
-		weather.setHumd(30.0);
+		weather.setHumd(30);
 		weather.setLocationName("西屯區");
 		weather.setTemp(17.0);
 		weather.setTime("2017-04-03T00:00:00+08:00");
-		weather.setWdir(30.0);
+		weather.setWdir("北北西");
 		weather.setWdsd(15.0);
 		
 		return weather;	
@@ -63,11 +81,11 @@ public class WeatherService {
 		twoDays.setLocationName("西屯區");
 		for (int i=1; i<=24; i++){
 			TwoDaysItem item = new TwoDaysItem();
-			item.setName("session" + i);
+			item.setName(i);
 			item.setTime("2017-04-03T00:00:00+08:00");
-			item.setTemp(18.0);
+			item.setTemp(18);
 			item.setWx("多雲時晴");
-			item.setPop(10.0);
+			item.setPop(10);
 			
 			items.add(item);
 		}
@@ -85,15 +103,32 @@ public class WeatherService {
 		
 		week.setLocationName("西屯區");
 		
-		for(int i=1; i<=7; i++){
+		int i=0;
+		
+		for(i=0; i<7; i++){
 			WeekItem item = new WeekItem();
-			item.setName("Day" + i);
-			item.setTempMax(28.0);
-			item.setTempMin(23.0);
-			item.setWxDay("晴時多雲");
-			item.setWxNight("多雲");
-			
+			item.setName(i+1);
 			items.add(item);
+		}
+		
+		i=0;
+		
+		for (WeekItem item : items) {
+			Day day = new Day();
+			day.setMaxT(30);
+			day.setMinT(28);
+			day.setWx("晴天");
+			day.setPop(0);
+			item.setDay(day);
+			i++;
+
+			Night night = new Night();
+			night.setMaxT(28);
+			night.setMinT(25);
+			night.setWx("多雲");
+			night.setPop(0);
+			item.setNight(night);
+			i++;
 		}
 		week.setItems(items);
 		

@@ -2,56 +2,49 @@ package backend.data;
 
 public class WeekItem {
 	
-	private String name;  //天數名稱
+	private int name;  //天數名稱
 	
-	private Double tempMax; //當天高溫
+	private Day day;
 	
-	private Double tempMin; //當天低溫
+	private Night night;
 	
-	private String wxDay;   //早上天氣概況
-	
-	private String wxNight; //晚上天氣概況
 	
 //	private Double uvi; //紫外線指數
 
-	public String getName() {
+	public int getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(int name) {
 		this.name = name;
 	}
 
-	public Double getTempMax() {
-		return tempMax;
+	public Day getDay() {
+		return day;
 	}
 
-	public void setTempMax(Double tempMax) {
-		this.tempMax = tempMax;
+	public void setDay(Day day) {
+//		Day cloneDay = new Day();
+//		cloneDay.setMaxT(day.getMaxT());
+//		cloneDay.setMinT(day.getMinT());
+//		cloneDay.setPop(day.getPop());
+//		cloneDay.setWx(day.getWx());
+//		this.day = cloneDay;
+		this.day = day;
 	}
 
-	public Double getTempMin() {
-		return tempMin;
+	public Night getNight() {
+		return night;
 	}
 
-	public void setTempMin(Double tempMin) {
-		this.tempMin = tempMin;
-	}
-
-	public String getWxDay() {
-		return wxDay;
-	}
-
-	public void setWxDay(String wxDay) {
-		this.wxDay = wxDay;
-	}
-
-	public String getWxNight() {
-		return wxNight;
-	}
-
-	public void setWxNight(String wxNight) {
-		this.wxNight = wxNight;
+	public void setNight(Night night) {
+//		Night cloneNight = new Night();
+//		cloneNight.setMaxT(night.getMaxT());
+//		cloneNight.setMinT(night.getMinT());
+//		cloneNight.setPop(night.getPop());
+//		cloneNight.setWx(night.getWx());
+//		this.night = cloneNight;
+		this.night = night;
 	}
 
 //	public Double getUvi() {

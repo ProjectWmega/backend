@@ -2,21 +2,21 @@ package backend.data;
 
 public class TwoDaysItem {
 	
-	private String name;  //時間區間名稱
+	private int name;  //時間區間名稱
 
 	private String time;  //時間
 	
-	private Double temp;  //溫度
+	private int temp;  //溫度
 	
 	private String wx;    //天氣狀況
 	
-	private Double pop;   //降雨機率
+	private int pop;   //降雨機率
 
-	public String getName() {
+	public int getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(int name) {
 		this.name = name;
 	}
 
@@ -28,11 +28,11 @@ public class TwoDaysItem {
 		this.time = time;
 	}
 
-	public Double getTemp() {
+	public int getTemp() {
 		return temp;
 	}
 
-	public void setTemp(Double temp) {
+	public void setTemp(int temp) {
 		this.temp = temp;
 	}
 
@@ -44,11 +44,11 @@ public class TwoDaysItem {
 		this.wx = wx;
 	}
 
-	public Double getPop() {
+	public int getPop() {
 		return pop;
 	}
 
-	public void setPop(Double pop) {
+	public void setPop(int pop) {
 		this.pop = pop;
 	}
 }

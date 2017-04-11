@@ -1,2 +1,4 @@
 /target/
 src/main/java/backend/data/CwbData.java
+src/main/java/backend/data/EpaData.java
+src/main/java/backend/connect/

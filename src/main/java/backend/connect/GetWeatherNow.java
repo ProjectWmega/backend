@@ -71,7 +71,7 @@ public class GetWeatherNow {
 //			System.out.println(soapDatainJsonObject);
 
 		} catch (Exception error) {
-			System.out.println(error);
+			error.printStackTrace();
 		}
 		return soapDatainJsonObject;
 	}
@@ -86,14 +86,18 @@ public class GetWeatherNow {
 		JSONArray autoArr = autoObj.getJSONObject("cwbopendata").getJSONArray("location");
 		for(int i=0; i<autoArr.length(); i++){
 			WeatherNow now = new WeatherNow();
+			
+			//get locationName
 			String locationName = autoArr.getJSONObject(i).getString("locationName");
 			System.out.println(locationName);
 			now.setLocationName(locationName);
 			
+			//get time
 			String time = autoArr.getJSONObject(i).getJSONObject("time").getString("obsTime");
 			System.out.println("µo¥¬®É¶¡: " + time);
 			now.setTime(time);
 			
+			//get weather element
 			JSONArray weatherElement = autoArr.getJSONObject(i).getJSONArray("weatherElement");
 			for (int j=0; j<weatherElement.length(); j++){
 				String elementName = weatherElement.getJSONObject(j).getString("elementName");
@@ -101,8 +105,10 @@ public class GetWeatherNow {
 				System.out.println(elementName + " : " + elementValue);
 				
 				switch(elementName){
-				case"WDIR":
-					now.setWdir(elementValue);
+				case"WDIR":{
+					String wind = now.wdirToString(elementValue);
+					now.setWdir(wind);
+				}
 					break;
 				case"WDSD":
 					now.setWdsd(elementValue);
@@ -110,9 +116,14 @@ public class GetWeatherNow {
 				case"TEMP":
 					now.setTemp(elementValue);
 					break;
-				case"HUMD":
-					now.setHumd(elementValue);
+				case"HUMD":{
+					int value = 0;
+					elementValue = elementValue*100;
+					value = elementValue.intValue();
+					now.setHumd(value);
+					System.out.println("get: " + now.getHumd());
 					break;
+				}
 				case"H_24R":
 					now.setH_24r(elementValue);
 					break;
@@ -149,8 +160,10 @@ public class GetWeatherNow {
 				System.out.println(elementName + " : " + elementValue);
 				
 				switch(elementName){
-				case"WDIR":
-					now.setWdir(elementValue);
+				case"WDIR":{
+					String wind = now.wdirToString(elementValue);
+					now.setWdir(wind);
+				}
 					break;
 				case"WDSD":
 					now.setWdsd(elementValue);
@@ -158,9 +171,14 @@ public class GetWeatherNow {
 				case"TEMP":
 					now.setTemp(elementValue);
 					break;
-				case"HUMD":
-					now.setHumd(elementValue);
+				case"HUMD":{
+					int value = 0;
+					elementValue = elementValue*100;
+					value = elementValue.intValue();
+					now.setHumd(value);
+					System.out.println("get: " + now.getHumd());
 					break;
+				}
 				case"24R":
 					now.setH_24r(elementValue);
 					break;
