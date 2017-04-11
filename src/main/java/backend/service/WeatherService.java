@@ -55,6 +55,25 @@ public class WeatherService {
 	}
 	
 	@GET
+	@Path("twoDays")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<TwoDays> twoDaysWeather(){
+		List<TwoDays> twoDays = new ArrayList<TwoDays>();
+		twoDays = twoDaysWeather.getTwoDaysWeather();
+		
+		return twoDays;
+	}
+	
+	@GET
+	@Path("week")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Week> weekWeather(){
+		List<Week> weeks= new ArrayList<Week>();
+		weeks = weeksWeather.getWeekWeather();
+		return weeks;
+	}
+	
+	@GET
 	@Path("test")
 	@Produces(MediaType.APPLICATION_JSON)
 	public WeatherNow testWeather() {
