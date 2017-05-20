@@ -1,8 +1,12 @@
 package backend.connect;
 
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+//import java.util.Date;
+import java.sql.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.*;
@@ -18,6 +22,7 @@ import org.json.XML;
 import org.w3c.dom.*;
 
 import backend.data.WeatherNow;
+import backend.db.WeatherDBManager;
 import backend.data.CwbData;
 
 import java.io.*;
@@ -45,14 +50,16 @@ public class GetWeatherNow {
 	
 	private static String authorizationkey = data.getTokenKey();
 	
+	private static WeatherDBManager db = WeatherDBManager.getInstance();
+	
 	public JSONObject getJson(String dataId) {
 		
 		JSONObject soapDatainJsonObject = new JSONObject();
 
 		try {
 			String pre_apiURL = "http://opendata.cwb.gov.tw/opendataapi?dataid=" + dataId + "&authorizationkey=" + authorizationkey;
-			System.out.println("url " + pre_apiURL);
-			System.out.println("----------------------------");
+//			System.out.println("url " + pre_apiURL);
+//			System.out.println("----------------------------");
 			URL url = new URL(pre_apiURL);
 
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -89,12 +96,11 @@ public class GetWeatherNow {
 			
 			//get locationName
 			String locationName = autoArr.getJSONObject(i).getString("locationName");
-			System.out.println(locationName);
 			now.setLocationName(locationName);
 			
 			//get time
 			String time = autoArr.getJSONObject(i).getJSONObject("time").getString("obsTime");
-			System.out.println("發布時間: " + time);
+			time = time.substring(0, 19).replace("T", " ");
 			now.setTime(time);
 			
 			//get weather element
@@ -102,7 +108,6 @@ public class GetWeatherNow {
 			for (int j=0; j<weatherElement.length(); j++){
 				String elementName = weatherElement.getJSONObject(j).getString("elementName");
 				Double elementValue = weatherElement.getJSONObject(j).getJSONObject("elementValue").getDouble("value");
-				System.out.println(elementName + " : " + elementValue);
 				
 				switch(elementName){
 				case"WDIR":{
@@ -121,7 +126,6 @@ public class GetWeatherNow {
 					elementValue = elementValue*100;
 					value = elementValue.intValue();
 					now.setHumd(value);
-					System.out.println("get: " + now.getHumd());
 					break;
 				}
 				case"H_24R":
@@ -132,7 +136,7 @@ public class GetWeatherNow {
 				}
 			}
 			nows.add(now);
-			System.out.println("--------------------------------------------------------");
+			db.addNowWeather(now);
 		}
 		
 		//getBureauWeatherData
@@ -140,11 +144,10 @@ public class GetWeatherNow {
 		for(int i=0; i<bureauArr.length(); i++){
 			WeatherNow now = new WeatherNow();
 			String locationName = bureauArr.getJSONObject(i).getString("locationName");
-			System.out.println(locationName);
 			now.setLocationName(locationName);
 			
-			String time = bureauArr.getJSONObject(i).getJSONObject("time").getString("obsTime");
-			System.out.println("發布時間: " + time);
+			String time = autoArr.getJSONObject(i).getJSONObject("time").getString("obsTime");
+			time = time.substring(0, 19).replace("T", " ");
 			now.setTime(time);
 			
 			JSONArray weatherElement = bureauArr.getJSONObject(i).getJSONArray("weatherElement");
@@ -155,9 +158,7 @@ public class GetWeatherNow {
 					elementValue = weatherElement.getJSONObject(j).getJSONObject("elementValue").getDouble("value");
 				}catch(JSONException e){
 					e.getStackTrace();
-					System.out.println(elementName + " :------error------");
 				}
-				System.out.println(elementName + " : " + elementValue);
 				
 				switch(elementName){
 				case"WDIR":{
@@ -176,7 +177,6 @@ public class GetWeatherNow {
 					elementValue = elementValue*100;
 					value = elementValue.intValue();
 					now.setHumd(value);
-					System.out.println("get: " + now.getHumd());
 					break;
 				}
 				case"24R":
@@ -187,7 +187,7 @@ public class GetWeatherNow {
 				}
 			}
 			nows.add(now);
-			System.out.println("--------------------------------------------------------");
+			db.addNowWeather(now);
 		}
 		return nows;
 	}

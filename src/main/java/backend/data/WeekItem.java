@@ -24,12 +24,6 @@ public class WeekItem {
 	}
 
 	public void setDay(Day day) {
-//		Day cloneDay = new Day();
-//		cloneDay.setMaxT(day.getMaxT());
-//		cloneDay.setMinT(day.getMinT());
-//		cloneDay.setPop(day.getPop());
-//		cloneDay.setWx(day.getWx());
-//		this.day = cloneDay;
 		this.day = day;
 	}
 
@@ -38,12 +32,6 @@ public class WeekItem {
 	}
 
 	public void setNight(Night night) {
-//		Night cloneNight = new Night();
-//		cloneNight.setMaxT(night.getMaxT());
-//		cloneNight.setMinT(night.getMinT());
-//		cloneNight.setPop(night.getPop());
-//		cloneNight.setWx(night.getWx());
-//		this.night = cloneNight;
 		this.night = night;
 	}
 

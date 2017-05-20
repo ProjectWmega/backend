@@ -1,11 +1,13 @@
 package backend.data;
 
 public class UVI {
-	private String siteName = "";
+	private String siteName;
 	
-	private int value = 0;
+	private int value;
 	
-	private String county = "";
+	private String county;
+	
+	private String time;
 
 	public String getSiteName() {
 		return siteName;
@@ -29,6 +31,14 @@ public class UVI {
 
 	public void setCounty(String county) {
 		this.county = county;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
 	}
 
 }
